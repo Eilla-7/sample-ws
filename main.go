@@ -56,7 +56,6 @@ func QueryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Example data returned from "query"
 	json.NewEncoder(w).Encode(map[string]string{
 		"user": claims.Username,
 		"data": "This is protected data from the MySQL-backed service.",
