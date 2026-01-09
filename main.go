@@ -56,8 +56,19 @@ func QueryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(map[string]string{
+	// json.NewEncoder(w).Encode(map[string]string{
+	// 	"user": claims.Username,
+	// 	"data": "data",
+	// })
+
+	data, err := GetUserData(claims.Username)
+	if err != nil {
+		http.Error(w, "No data found", http.StatusNotFound)
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
 		"user": claims.Username,
-		"data": "This is protected data from the MySQL-backed service.",
+		"data": data,
 	})
 }
