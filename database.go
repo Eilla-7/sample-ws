@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-
+	"golang.org/x/crypto/bcrypt"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -18,14 +18,17 @@ func InitDB() {
 }
 
 func VerifyUserInDB(username, password string) bool {
-	var storedPass string
+	var storedHash string
 	query := "SELECT password FROM users WHERE username = ?"
-	err := db.QueryRow(query, username).Scan(&storedPass)
+	err := db.QueryRow(query, username).Scan(&storedHash)
 	if err != nil {
 		return false
 	}
-	return storedPass == password
+
+	err = bcrypt.CompareHashAndPassword([]byte(storedHash), []byte(password))
+	return err == nil
 }
+
 
 func GetUserData(username string) ([]string, error) {
 	var userID int
