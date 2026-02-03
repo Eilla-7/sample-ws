@@ -2,14 +2,24 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error ...")
+	}
 	InitDB()
+	http.HandleFunc("/signup", NewUserHandler)
 	http.HandleFunc("/auth", AuthHandler)
 	http.HandleFunc("/query", QueryHandler)
 
-	fmt.Println("Server listening on :8080")
-	http.ListenAndServe(":8080", nil)
+	port := os.Getenv("PORT")
+	fmt.Println("Server listening on :", port)
+	http.ListenAndServe(":"+port, nil)
 }
